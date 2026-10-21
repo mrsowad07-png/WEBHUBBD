@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src data: https:; connect-src https://bd-web-maker-default-rtdb.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; form-action 'none'; base-uri 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Web Maker – Custom Website Order</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#050914;--card:rgba(14,19,32,.85);--p:#00f2fe;--a:#4facfe;--v:#9b5cff;--t:#f0f6fc;--m:#8b949e;--b:#263047;--ok:#2ea44f;--bad:#ff5c5c;--warn:#f7b731;--tg:#0088cc;--wa:#25d366}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Hind Siliguri',sans-serif}
+body{background:var(--bg);color:var(--t);min-height:100vh;padding:20px;display:flex;justify-content:center;align-items:flex-start}
+.hide{display:none!important}
+.app{width:100%;max-width:940px;margin:auto;background:var(--card);border:1px solid var(--b);border-radius:24px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.banner{display:block;width:100%;aspect-ratio:3/1;max-height:300px;overflow:hidden;background:#0b0f19}.banner img{width:100%;height:100%;object-fit:cover;display:block}
+header{padding:22px;text-align:center;border-bottom:1px solid var(--b);background:linear-gradient(135deg,rgba(0,242,254,.08),rgba(155,92,255,.08))}
+header h1{font-size:2rem;background:linear-gradient(90deg,var(--p),var(--v));-webkit-background-clip:text;background-clip:text;color:transparent;display:inline-block}
+header p{color:var(--m);font-size:.92rem;margin-top:4px}
+.ubar{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:12px;font-size:.85rem;color:var(--m)}
+.ubar button{background:rgba(255,255,255,.06);border:1px solid var(--b);color:var(--t);border-radius:20px;padding:5px 14px;cursor:pointer;font-size:.85rem}
+.screen{display:none;padding:26px}.screen.on{display:block;animation:fd .4s}@keyframes fd{from{opacity:0;transform:translateY(14px)}}
+h2{font-size:1.4rem;margin-bottom:6px}.sub{color:var(--m);font-size:.92rem;margin-bottom:18px;line-height:1.6}
+.back-btn{background:none;border:none;color:var(--m);cursor:pointer;font-size:.95rem;margin-bottom:14px;display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+.card{background:rgba(255,255,255,.03);border:2px solid var(--b);border-radius:18px;padding:22px 14px;text-align:center;cursor:pointer;color:var(--t);font-size:1rem;position:relative;transition:.25s}
+.card:hover{border-color:var(--p);transform:translateY(-4px);box-shadow:0 14px 34px rgba(79,172,254,.22)}
+.card .ic{font-size:2rem;color:var(--p);margin-bottom:8px}.card .nm{font-weight:700;font-size:1.05rem}
+.card .pr{font-size:1.7rem;font-weight:700;color:var(--p);margin:6px 0}.card .dp{font-size:.8rem;color:var(--warn);margin-bottom:6px}.card .ds{font-size:.84rem;color:var(--m);line-height:1.5}
+.tag{position:absolute;top:10px;right:10px;background:linear-gradient(90deg,var(--p),var(--a));color:#000;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:20px}
+.feat{list-style:none;margin:14px 0 18px}.feat li{padding:10px 14px;background:rgba(255,255,255,.03);border:1px solid var(--b);border-radius:10px;margin-bottom:8px;font-size:.95rem}.feat i{color:var(--ok);margin-right:10px}
+.big{font-size:2.4rem;font-weight:700;color:var(--p)}.dpbox{display:inline-block;margin:6px 0 4px;padding:6px 14px;border:1px solid var(--warn);color:var(--warn);border-radius:20px;font-size:.9rem}
+.cbox{background:#0b0f19;border:1px solid var(--b);border-radius:14px;padding:16px;margin:16px 0}.cbox h3{font-size:1.05rem;margin-bottom:6px}
+label{display:block;margin-bottom:7px;font-weight:600;font-size:.95rem}.fg{margin-bottom:18px}
+.in{width:100%;padding:12px 14px;background:#0b0f19;border:1px solid var(--b);border-radius:10px;color:var(--t);font-size:1rem;outline:none}.in:focus{border-color:var(--p)}
+textarea.in{min-height:120px;resize:vertical}
+.err{color:var(--bad);font-size:.82rem;margin-top:5px;display:none}.fg.bad .err{display:block}.fg.bad .in{border-color:var(--bad)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.btn{width:100%;padding:13px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--p),var(--a),var(--v));color:#001018;font-size:1.02rem;font-weight:700;cursor:pointer;margin-top:8px;display:block;text-decoration:none;text-align:center}
+.btn:disabled{opacity:.5;cursor:not-allowed}.btn.tg{background:var(--tg);color:#fff}.btn.wa{background:var(--wa);color:#04210f}.btn.ghost{background:transparent;border:1px solid var(--b);color:var(--t)}.btn.warnb{background:var(--warn);color:#201500}
+.center{text-align:center}.emailbox{max-width:360px;margin:0 auto;text-align:left}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(90px);background:#111827;border:1px solid var(--p);padding:10px 20px;border-radius:30px;transition:.35s;z-index:90;font-size:.9rem;max-width:92vw;text-align:center}.toast.show{transform:translateX(-50%)}
+.ord{background:#0b0f19;border:1px solid var(--b);border-radius:14px;padding:16px;margin-bottom:14px;line-height:1.8;word-break:break-word}
+.ord.pending,.ord.fpend,.ord.work{border-left:4px solid var(--warn)}.ord.approved,.ord.done{border-left:4px solid var(--ok)}.ord.rejected,.ord.frej{border-left:4px solid var(--bad)}.ord.due{border-left:4px solid var(--v)}
+.ord .oh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}.oid{font-weight:700;color:var(--p)}
+.bd{padding:3px 10px;border-radius:20px;font-size:.78rem;font-weight:700;background:rgba(255,255,255,.08)}
+.note{padding:12px 14px;border-radius:10px;font-size:.92rem;margin:10px 0 4px;line-height:1.7;background:rgba(255,255,255,.04);border:1px solid var(--b)}
+.skel{height:90px;border-radius:14px;margin-bottom:12px;background:#121a29}
+#go{position:fixed;inset:0;z-index:80;background:rgba(5,9,20,.92);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:20px}#go.on{display:flex}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="go"><h2>পেমেন্ট পেজে নেওয়া হচ্ছে...</h2><p class="sub">একটু অপেক্ষা করুন</p></div>
+<div class="app">
+  <a class="banner hide" id="banner" target="_blank" rel="noopener noreferrer"><img id="bannerImg" alt="ব্যানার" referrerpolicy="no-referrer"></a>
+  <header><h1><i class="fa-solid fa-code"></i> Web Maker</h1><p>আপনার চাহিদা অনুযায়ী কাস্টম ওয়েবসাইটের সেরা সমাধান</p>
+    <div class="ubar"><button type="button" data-go="home"><i class="fa-solid fa-store"></i> প্যাকেজ</button><button type="button" data-go="orders"><i class="fa-solid fa-box-open"></i> আমার অর্ডার</button><span id="uinfo" class="hide"></span><button type="button" id="ulogout" class="hide"><i class="fa-solid fa-right-from-bracket"></i> লগআউট</button></div>
+  </header>
+
+  <section class="screen center" id="login">
+    <h2><i class="fa-solid fa-user-lock"></i> লগইন / রেজিস্টার</h2>
+    <p class="sub">প্যাকেজ ও দাম দেখতে এবং অর্ডার করতে ইমেইল-পাসওয়ার্ড দিয়ে লগইন করুন, অথবা নতুন অ্যাকাউন্ট খুলুন।</p>
+    <div class="emailbox">
+      <div class="fg" style="margin-bottom:12px"><input class="in" id="uem" type="email" placeholder="ইমেইল" autocomplete="email"></div>
+      <div class="fg" style="margin-bottom:12px"><input class="in" id="upw" type="password" placeholder="পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)" autocomplete="current-password"></div>
+      <button type="button" class="btn" id="uLoginBtn">লগইন করুন</button>
+      <button type="button" class="btn ghost" id="uSignupBtn">নতুন অ্যাকাউন্ট খুলুন</button>
+      <button type="button" class="back-btn" id="uResetBtn" style="margin:12px auto 0">পাসওয়ার্ড ভুলে গেছেন?</button>
+    </div>
+    <div class="sub" id="gerr" style="color:var(--bad);min-height:1.4em;margin-top:10px"></div>
+  </section>
+
+  <section class="screen" id="home">
+    <h2>প্যাকেজ বেছে নিন</h2><p class="sub">প্যাকেজে ক্লিক করলে বিস্তারিত ও যোগাযোগের অপশন দেখবেন। কাজ শুরুর আগে প্যাকেজ মূল্যের <b>১০% ডাউন পেমেন্ট</b> দিতে হয়।</p>
+    <div class="grid" id="pkgGrid"></div>
+  </section>
+
+  <section class="screen" id="pkg">
+    <button type="button" class="back-btn" data-go="home"><i class="fa-solid fa-arrow-left"></i> ফিরে যান</button>
+    <h2 id="pkName"></h2><div class="big" id="pkPrice"></div><div class="dpbox" id="pkDown"></div>
+    <ul class="feat" id="pkFeat"></ul>
+    <div class="cbox">
+      <h3><i class="fa-solid fa-comments"></i> আগে ডেভেলপারের সাথে কথা বলুন</h3>
+      <p class="sub" style="margin-bottom:10px">নিচের যেকোনো মাধ্যমে আপনার প্যাকেজের কথা জানান। আমরা আপনার সাথে কথা বলে কাজ বুঝে নেব এবং ডাউন পেমেন্টের পরিমাণ জানিয়ে দেব।</p>
+      <div id="pkContact"></div>
+    </div>
+    <button type="button" class="btn" data-go="form">কথা হয়েছে, ডাউন পেমেন্টে যাব <i class="fa-solid fa-arrow-right"></i></button>
+  </section>
+
+  <section class="screen" id="form">
+    <button type="button" class="back-btn" data-go="pkg"><i class="fa-solid fa-arrow-left"></i> ফিরে যান</button>
+    <h2>আপনার তথ্য দিন</h2><p class="sub" id="formSub"></p>
+    <form id="detailsForm" novalidate autocomplete="off">
+      <input class="hp" id="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="fg"><label><i class="fa-solid fa-user"></i> আপনার নাম</label><input class="in" id="name" placeholder="পুরো নাম লিখুন" maxlength="60"><div class="err">অনুগ্রহ করে নাম লিখুন</div></div>
+      <div class="fg"><label><i class="fa-solid fa-phone"></i> মোবাইল নম্বর / টেলিগ্রাম ইউজারনেম</label><input class="in" id="contact" placeholder="017xxxxxxxx বা @username" maxlength="40"><div class="err">সঠিক মোবাইল নম্বর বা @username দিন</div></div>
+      <div class="fg"><label><i class="fa-solid fa-file-lines"></i> কাজের বিবরণ</label><textarea class="in" id="desc" placeholder="কি চান, কি কি ফিচার থাকবে..." maxlength="1000"></textarea><div class="err">কমপক্ষে ১০ অক্ষরের বিবরণ লিখুন</div></div>
+      <button class="btn" type="submit"><i class="fa-solid fa-lock"></i> ডাউন পেমেন্টে যান <i class="fa-solid fa-arrow-right"></i></button>
+    </form>
+  </section>
+
+  <section class="screen" id="orders">
+    <h2>আমার অর্ডার</h2><p class="sub">অর্ডারের প্রতিটি ধাপ এখানে দেখা যাবে। পেজটি নিজে থেকেই আপডেট হয়।</p>
+    <div id="ordList"></div>
+    <button type="button" class="btn ghost" id="ordRef"><i class="fa-solid fa-rotate"></i> রিফ্রেশ করুন</button>
+  </section>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+try { if (window.top !== window.self) window.top.location = window.self.location; } catch (e) { document.body.innerHTML = ''; return; }
+
+const CFG = {
+  dev: 'devlopersowad',            // ডেভেলপারের টেলিগ্রাম ইউজারনেম (@ ছাড়া)
+  whatsapp: '8801XXXXXXXXX',       // ⚠ নিজের WhatsApp নম্বর দিন (দেশের কোডসহ, + ছাড়া)
+  telegram: 'WebMakerBdBot',       // অর্ডার/যোগাযোগ বট
+  payBot: 'PaymentVerifyBdWebMakerBot',
+  payPage: 'pay.html',
+  db: 'https://bd-web-maker-default-rtdb.firebaseio.com',
+  key: 'AIzaSyDmSG4EPJoRHiCJSI58W63PFlHQeZX_XAI',
+  userPollSec: 20
+};
+const PKGS = {
+  basic:   {name:'নরমাল (Basic)',        price:300,  icon:'fa-seedling', desc:'সবচেয়ে কম দামের সুন্দর ওয়েবসাইট', feats:['সিঙ্গেল পেজ ডিজাইন','মোবাইল ফ্রেন্ডলি লেআউট','বেসিক কন্টাক্ট সেকশন']},
+  standard:{name:'মাঝারি (Standard)',    price:800,  icon:'fa-rocket',   desc:'রেসপন্সিভ ডিজাইন ও স্ট্যান্ডার্ড ফিচার', feats:['মাল্টি-সেকশন রেসপন্সিভ ডিজাইন','ব্র্যান্ডিং কালার ও লোগো সাপোর্ট','কন্টাক্ট ফর্ম ও সোশ্যাল লিংক','১ বার ফ্রি রিভিশন']},
+  bot:     {name:'টেলিগ্রাম বট',          price:600,  icon:'fa-robot',    desc:'আপনার প্রয়োজন অনুযায়ী কাস্টম টেলিগ্রাম বট', feats:['কাস্টম কমান্ড ও মেনু','অটো রিপ্লাই সিস্টেম','সেটআপ ও গাইডলাইন']},
+  pro:     {name:'ফুল ব্যাকএন্ড (Pro)',   price:1850, icon:'fa-server',   desc:'ফুল ব্যাকএন্ড সার্ভার + হাই সিকিউরিটি সমৃদ্ধ ওয়েবসাইট', feats:['ফুল ব্যাকএন্ড সার্ভার','হাই সিকিউরিটি সেটআপ','প্রিমিয়াম ডিজাইন','অগ্রাধিকার সাপোর্ট']},
+  apk:     {name:'ওয়েব টু APK',          price:30,   icon:'fa-mobile-screen', desc:'আপনার ওয়েবসাইট থেকে APK — কোনো ওয়াটারমার্ক ছাড়া', feats:['ওয়েবসাইট থেকে অ্যান্ড্রয়েড APK','ওয়াটারমার্ক ছাড়া','দ্রুত ডেলিভারি']},
+  multi:   {name:'মাল্টি বিজনেস',          price:3000, icon:'fa-layer-group', desc:'একাধিক ওয়েবসাইট/অর্ডার + সিকিউর bKash, Nagad ও Binance পেমেন্ট সিস্টেম', feats:['একাধিক ওয়েবসাইট','সিকিউর bKash পেমেন্ট সিস্টেম','সিকিউর Nagad পেমেন্ট সিস্টেম','Binance পেমেন্ট সিস্টেম']},
+  ultra:   {name:'আল্টিমেট (Hi-Tech)',    price:5000, icon:'fa-bolt',     desc:'সবচেয়ে হাই-টেক + স্পেশাল প্রোটেকশন ইত্যাদি সব কিছু', feats:['সবচেয়ে হাই-টেক সলিউশন','স্পেশাল প্রোটেকশন','পেমেন্ট সিস্টেম, বট ও ব্যাকএন্ড সবকিছু','২৪/৭ প্রায়োরিটি সাপোর্ট']}
+};
+const dn = p => Math.ceil(p * .1);
+const S = { pkg:null, name:'', contact:'', desc:'' };
+let cur = 'home', shownAt = 0, U = null, afterLogin = null, ordT = null, ordSt = {}, leaving = false;
+const $ = id => document.getElementById(id);
+const bn = n => String(n).replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[d]);
+const taka = n => '৳ ' + bn(n);
+const clean = s => s.replace(/[\u0000-\u0008\u000B-\u001F\u007F<>]/g, '').trim();
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const el = (tag, cls, text) => { const e = document.createElement(tag); if(cls) e.className = cls; if(text != null) e.textContent = text; return e; };
+const ss = { get(k){ try { return JSON.parse(sessionStorage.getItem(k)); } catch(e){ return null; } }, set(k,v){ try { sessionStorage.setItem(k, JSON.stringify(v)); } catch(e){} }, del(k){ try { sessionStorage.removeItem(k); } catch(e){} } };
+function toast(t){ const e = $('toast'); e.textContent = t; e.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('show'), 2800); }
+function lnk(href, icon, text, cls){ const a = el('a', 'btn ' + cls); a.href = href; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.append(el('i', icon), document.createTextNode(' ' + text)); return a; }
+
+/* ব্যানার */
+const IMG_OK = u => typeof u === 'string' && u.length < 600000 && (/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+\/=]+$/.test(u) || /^https:\/\/[^\s"'<>]+$/.test(u));
+const LINK_OK = u => typeof u === 'string' && /^https:\/\/[^\s"'<>]+$/.test(u);
+async function loadBanner(){
+  try {
+    const r = await fetch(CFG.db + '/settings/banner.json'); if(!r.ok) return;
+    const b = await r.json(), box = $('banner');
+    if(!b || !b.on || !IMG_OK(b.img)){ box.classList.add('hide'); return; }
+    const im = $('bannerImg'); im.onerror = () => box.classList.add('hide'); im.src = b.img;
+    if(LINK_OK(b.link)) box.href = b.link; else box.removeAttribute('href');
+    box.classList.remove('hide');
+  } catch(e) {}
+}
+
+/* অথ */
+function saveAuth(){ ss.set('wm_auth', { uid:U.uid, email:U.email, name:U.name, rtok:U.rtok }); }
+async function uTok(){
+  if(!U) throw new Error('SESSION_EXPIRED');
+  if(U.tok && Date.now() < U.exp - 60000) return;
+  const r = await fetch('https://securetoken.googleapis.com/v1/token?key=' + CFG.key, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:'grant_type=refresh_token&refresh_token=' + encodeURIComponent(U.rtok) });
+  const d = await r.json(); if(!r.ok) throw new Error('SESSION_EXPIRED');
+  U.tok = d.id_token; U.rtok = d.refresh_token; U.exp = Date.now() + (+d.expires_in) * 1000; saveAuth();
+}
+async function uGet(path){
+  await uTok();
+  const r = await fetch(`${CFG.db}/${path}.json?auth=${encodeURIComponent(U.tok)}`);
+  if(!r.ok) throw new Error('DB_' + r.status);
+  return r.json();
+}
+async function restore(){
+  const a = ss.get('wm_auth'); if(!a || !a.rtok) return;
+  U = { uid:a.uid, email:a.email, name:a.name, tok:'', rtok:a.rtok, exp:0 };
+  try { await uTok(); setUbar(); } catch(e){ U = null; ss.del('wm_auth'); }
+}
+
+/* নেভিগেশন — লগইন ছাড়া কিছুই দেখা যাবে না */
+function go(id){
+  if(!U) { if(id !== 'login') afterLogin = id; id = 'login'; }
+  else if(id === 'login'){ id = afterLogin || 'home'; afterLogin = null; }
+  if(['pkg','form'].includes(id) && !S.pkg) id = 'home';
+  cur = id;
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id));
+  if(id !== 'orders') stopOrdPoll();
+  if(id === 'pkg') renderPkg();
+  if(id === 'form'){ shownAt = Date.now(); $('formSub').textContent = `ডাউন পেমেন্ট: ${taka(dn(S.pkg.price))} (${S.pkg.name} — মোট ${taka(S.pkg.price)}-এর ১০%)। পরের ধাপে সিকিউর পেমেন্ট পেজে যাবেন।`; if(!$('name').value && U && U.name) $('name').value = U.name.slice(0, 60); }
+  if(id === 'orders'){ loadOrders(); startOrdPoll(); }
+  window.scrollTo(0, 0);
+}
+document.addEventListener('click', e => { const g = e.target.closest('[data-go]'); if(g) go(g.dataset.go); });
+
+$('pkgGrid').innerHTML = Object.entries(PKGS).map(([k,p]) =>
+  `<button type="button" class="card" data-pkg="${k}">${k==='pro'?'<span class="tag">জনপ্রিয়</span>':''}<div class="ic"><i class="fa-solid ${p.icon}"></i></div><div class="nm">${p.name}</div><div class="pr">${taka(p.price)}</div><div class="dp">ডাউন পেমেন্ট ${taka(dn(p.price))}</div><div class="ds">${p.desc}</div></button>`).join('');
+$('pkgGrid').addEventListener('click', e => { const c = e.target.closest('[data-pkg]'); if(!c) return; S.pkg = { key:c.dataset.pkg, ...PKGS[c.dataset.pkg] }; go('pkg'); });
+
+function renderPkg(){
+  const p = S.pkg;
+  $('pkName').textContent = p.name; $('pkPrice').textContent = taka(p.price);
+  $('pkDown').textContent = `ডাউন পেমেন্ট (১০%): ${taka(dn(p.price))} • বাকি: ${taka(p.price - dn(p.price))} (কাজ শেষে)`;
+  $('pkFeat').innerHTML = p.feats.map(f => `<li><i class="fa-solid fa-check"></i>${f}</li>`).join('');
+  const msg = `আসসালামু আলাইকুম। আমি Web Maker থেকে "${p.name}" প্যাকেজ (${p.price} টাকা) নিতে চাই।\nইমেইল: ${U.email}`;
+  $('pkContact').replaceChildren(
+    lnk(`https://t.me/${encodeURIComponent(CFG.dev)}?text=${encodeURIComponent(msg)}`, 'fa-brands fa-telegram', 'টেলিগ্রামে ডেভেলপার (@' + CFG.dev + ')', 'tg'),
+    lnk(`https://wa.me/${CFG.whatsapp}?text=${encodeURIComponent(msg)}`, 'fa-brands fa-whatsapp', 'WhatsApp-এ মেসেজ দিন', 'wa'),
+    lnk(`https://t.me/${encodeURIComponent(CFG.telegram)}`, 'fa-solid fa-robot', 'বট: @' + CFG.telegram, 'ghost'));
+}
+
+function check(id, ok, msg){ const g = $(id).closest('.fg'); g.classList.toggle('bad', !ok); if(!ok && msg) g.querySelector('.err').textContent = msg; return ok; }
+$('detailsForm').addEventListener('submit', e => {
+  e.preventDefault();
+  if($('website').value || leaving) return;
+  if(!U){ go('login'); return; }
+  if(Date.now() - shownAt < 3000){ toast('অনুগ্রহ করে তথ্যগুলো ভালো করে পূরণ করুন'); return; }
+  const name = clean($('name').value), contact = clean($('contact').value), desc = clean($('desc').value);
+  const v1 = check('name', name.length >= 2), v2 = check('contact', /^01[3-9]\d{8}$/.test(contact) || /^@[A-Za-z0-9_]{4,32}$/.test(contact)), v3 = check('desc', desc.length >= 10);
+  if(!(v1 && v2 && v3)) return;
+  ss.set('wm_cart', { pkg:S.pkg.key, name, contact, desc, t:Date.now() }); ss.del('wm_last'); ss.del('wm_final');
+  leaving = true; $('go').classList.add('on');
+  setTimeout(() => { location.href = CFG.payPage; }, 600);
+});
+
+/* লগইন */
+function setUbar(){ ['uinfo','ulogout'].forEach(i => $(i).classList.toggle('hide', !U)); if(U) $('uinfo').textContent = U.email || U.name; }
+function setUser(d){
+  U = { uid:d.localId, email:d.email || '', name:d.displayName || '', tok:d.idToken, rtok:d.refreshToken, exp:Date.now() + (+d.expiresIn) * 1000 };
+  saveAuth(); setUbar(); toast('স্বাগতম, ' + (U.name || U.email) + ' ✓');
+  const t = afterLogin || 'home'; afterLogin = null; go(t);
+}
+async function emailAuth(signup){
+  const err = $('gerr'); err.textContent = '';
+  const email = $('uem').value.trim(), pw = $('upw').value;
+  if(!EMAIL_RE.test(email)){ err.textContent = 'সঠিক ইমেইল দিন'; return; }
+  if(pw.length < 6){ err.textContent = 'পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের দিন'; return; }
+  const b = $(signup ? 'uSignupBtn' : 'uLoginBtn'); b.disabled = true;
+  try {
+    const r = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:' + (signup ? 'signUp' : 'signInWithPassword') + '?key=' + CFG.key, { method:'POST', body: JSON.stringify({ email, password: pw, returnSecureToken: true }) });
+    const d = await r.json(); if(!r.ok) throw new Error((d.error && d.error.message) || '');
+    $('upw').value = ''; setUser(d);
+  } catch(e) {
+    const m = String(e.message);
+    err.textContent = m.startsWith('EMAIL_EXISTS') ? 'এই ইমেইল দিয়ে আগেই অ্যাকাউন্ট আছে। লগইন করুন।' : m.startsWith('WEAK_PASSWORD') ? 'পাসওয়ার্ড খুব দুর্বল' : m.startsWith('TOO_MANY') ? 'অনেকবার চেষ্টা হয়েছে, কিছুক্ষণ পর আবার করুন' : (signup ? 'অ্যাকাউন্ট খোলা যায়নি' : 'ইমেইল বা পাসওয়ার্ড ভুল');
+  }
+  b.disabled = false;
+}
+$('uLoginBtn').addEventListener('click', () => emailAuth(false));
+$('uSignupBtn').addEventListener('click', () => emailAuth(true));
+$('upw').addEventListener('keydown', e => { if(e.key === 'Enter') emailAuth(false); });
+$('uResetBtn').addEventListener('click', async () => {
+  const email = $('uem').value.trim(), err = $('gerr');
+  if(!EMAIL_RE.test(email)){ err.textContent = 'আগে উপরে আপনার ইমেইল লিখুন'; return; }
+  try { await fetch('https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=' + CFG.key, { method:'POST', body: JSON.stringify({ requestType:'PASSWORD_RESET', email }) }); err.textContent = ''; toast('ইমেইল থাকলে রিসেট লিংক পাঠানো হয়েছে'); }
+  catch(e) { err.textContent = 'পাঠানো যায়নি'; }
+});
+function uLogout(msg){
+  U = null; afterLogin = null; ordSt = {}; ['wm_auth','wm_cart','wm_last','wm_final'].forEach(ss.del);
+  stopOrdPoll(); Object.assign(S, { pkg:null, name:'', contact:'', desc:'' });
+  document.querySelectorAll('.app input.in, .app textarea.in').forEach(i => i.value = ''); setUbar(); go('home'); if(msg) toast(msg);
+}
+$('ulogout').addEventListener('click', () => uLogout('লগআউট হয়েছে'));
+
+/* আমার অর্ডার */
+function stageOf(x){
+  const st = (x.r && x.r.status) || 'pending';
+  if(st === 'rejected') return 'rejected';
+  if(st === 'pending') return 'pending';
+  if(!(x.dv && x.dv.done)) return 'work';
+  if(!x.fp) return 'due';
+  const fs = x.fr && x.fr.status;
+  return fs === 'approved' ? 'done' : fs === 'rejected' ? 'frej' : 'fpend';
+}
+const LBL = { pending:'ডাউন পেমেন্ট যাচাই চলছে', work:'কাজ চলছে', rejected:'রিজেক্টেড', due:'কাজ সম্পন্ন — বাকি টাকা বাকি', fpend:'বাকি পেমেন্ট যাচাই চলছে', frej:'বাকি পেমেন্ট রিজেক্টেড', done:'ডেলিভারড' };
+function noteOf(s, o){
+  const rest = o.price - (o.down || dn(o.price));
+  return ({
+    pending:'⏳ আপনার ডাউন পেমেন্ট যাচাই চলছে। অ্যাডমিন TrxID মিলিয়ে অ্যাপ্রুভ করলে কাজ শুরু হবে।',
+    work:'✅ ডাউন পেমেন্ট কনফার্ম হয়েছে। আপনার কাজ চলছে। যোগাযোগের জন্য নিচের বাটন ব্যবহার করুন।',
+    rejected:'❌ ডাউন পেমেন্ট যাচাই করা যায়নি (TrxID বা টাকার পরিমাণ মেলেনি)। সঠিক তথ্যসহ পেমেন্ট ভেরিফাই বটে যোগাযোগ করুন।',
+    due:`🎉 আপনার অর্ডারের কাজ সম্পন্ন হয়েছে! তবে ওয়েবসাইট/ফাইলের লিংক পেতে বাকি ${taka(rest)} পরিশোধ করতে হবে। পেমেন্ট অ্যাপ্রুভ হলেই লিংক এখানে দেখতে পাবেন।`,
+    fpend:'⏳ বাকি টাকার পেমেন্ট যাচাই চলছে। অ্যাপ্রুভ হলে এখানেই আপনার লিংক দেখা যাবে।',
+    frej:'❌ বাকি পেমেন্ট যাচাই করা যায়নি। সঠিক তথ্যসহ পেমেন্ট ভেরিফাই বটে যোগাযোগ করুন; অ্যাডমিন রিসেট করলে আবার পেমেন্ট করতে পারবেন।',
+    done:'✅ সব পেমেন্ট সম্পন্ন! নিচে আপনার লিংক:'
+  })[s];
+}
+function drawOrders(list){
+  const box = $('ordList');
+  if(!list.length){ box.replaceChildren(el('div', 'sub center', 'এখনো কোনো অর্ডার নেই।')); return; }
+  box.replaceChildren(...list.map(x => {
+    const { id, o } = x, s = x.stage, c = el('div', 'ord ' + s);
+    const h = el('div', 'oh'); h.append(el('span', 'oid', id), el('span', 'bd', LBL[s]));
+    const pk = PKGS[o.package] ? PKGS[o.package].name : o.package;
+    c.append(h, el('div', '', `প্যাকেজ: ${pk} • মোট ${taka(o.price)} • ডাউন ${taka(o.down || dn(o.price))} • TrxID: ${o.trx}`), el('div', 'note', noteOf(s, o)));
+    if(s === 'due'){
+      const b = el('button', 'btn warnb', `বাকি ${taka(o.price - (o.down || dn(o.price)))} পেমেন্ট করুন`); b.type = 'button';
+      b.onclick = () => { ss.set('wm_final', { id }); ss.del('wm_cart'); ss.del('wm_last'); location.href = CFG.payPage; };
+      c.append(b);
+    }
+    if(s === 'done'){
+      const L = x.link;
+      if(LINK_OK(L)) c.append(lnk(L, 'fa-solid fa-link', 'আপনার লিংক খুলুন', ''), el('div', 'note', L));
+      else c.append(el('div', 'note', L ? String(L) : 'লিংক এখনো যুক্ত হয়নি, অ্যাডমিনের সাথে যোগাযোগ করুন।'));
+    }
+    if(['pending','work','rejected','fpend','frej'].includes(s)){
+      c.append(lnk(`https://t.me/${encodeURIComponent(CFG.dev)}?text=${encodeURIComponent('আমার অর্ডার নিয়ে কথা বলতে চাই। আইডি: ' + id)}`, 'fa-brands fa-telegram', 'ডেভেলপারকে মেসেজ', 'tg'));
+      if(s !== 'work') c.append(lnk(`https://t.me/${encodeURIComponent(CFG.payBot)}?text=${encodeURIComponent('পেমেন্ট যাচাই নিয়ে সাহায্য দরকার। আইডি: ' + id + ' TrxID: ' + o.trx)}`, 'fa-solid fa-shield-halved', 'পেমেন্ট ভেরিফাই বট', 'ghost'));
+    }
+    return c;
+  }));
+}
+async function loadOrders(silent){
+  if(!U) return;
+  const box = $('ordList');
+  if(!silent) box.replaceChildren(el('div', 'skel'), el('div', 'skel'));
+  try {
+    const ids = Object.keys(await uGet('userOrders/' + U.uid) || {});
+    const rows = await Promise.all(ids.map(async id => {
+      const [o, r, dv, fp, fr] = await Promise.all(['orders/','review/','delivery/','finalpay/','finalreview/'].map(p => uGet(p + id)));
+      const x = { id, o, r, dv, fp, fr, link:null }; x.stage = stageOf(x);
+      if(x.stage === 'done') x.link = await uGet('links/' + id).catch(() => null);
+      return x;
+    }));
+    const list = rows.filter(x => x.o).sort((a, b) => (+b.o.createdAt || 0) - (+a.o.createdAt || 0));
+    list.forEach(x => { if(ordSt[x.id] && ordSt[x.id] !== x.stage){ toast('🔔 আপনার অর্ডারের স্ট্যাটাস আপডেট হয়েছে!'); } ordSt[x.id] = x.stage; });
+    drawOrders(list);
+  } catch(e) {
+    if(e.message === 'SESSION_EXPIRED'){ uLogout('সেশন শেষ। আবার লগইন করুন।'); return; }
+    if(!silent) box.replaceChildren(el('div', 'sub center', 'লোড করা যায়নি। রিফ্রেশ করুন।'));
+  }
+}
+function startOrdPoll(){ stopOrdPoll(); ordT = setInterval(() => { if(!document.hidden) loadOrders(true); }, CFG.userPollSec * 1000); }
+function stopOrdPoll(){ if(ordT){ clearInterval(ordT); ordT = null; } }
+$('ordRef').addEventListener('click', () => loadOrders());
+
+go('home'); loadBanner();
+restore().then(() => { go(location.hash === '#orders' ? 'orders' : 'home'); });
+})();
+</script>
+</body>
+</html>
