@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src data:; connect-src https://bd-web-maker-default-rtdb.firebaseio.com https://securetoken.googleapis.com; form-action 'none'; base-uri 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Secure Payment – Web Maker</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#050914;--card:rgba(14,19,32,.88);--p:#00f2fe;--a:#4facfe;--v:#9b5cff;--t:#f0f6fc;--m:#8b949e;--b:#263047;--bk:#e2136e;--ng:#f7931e;--tg:#0088cc;--ok:#2ea44f;--bad:#ff5c5c;--warn:#f7b731}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Hind Siliguri',sans-serif}
+body{background:var(--bg);color:var(--t);min-height:100vh;padding:20px;display:flex;justify-content:center;align-items:flex-start}
+.hide{display:none!important}
+.app{width:100%;max-width:640px;margin:auto;background:var(--card);border:1px solid var(--b);border-radius:24px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+header{padding:20px;text-align:center;border-bottom:1px solid var(--b);background:linear-gradient(135deg,rgba(0,242,254,.08),rgba(155,92,255,.08))}
+header h1{font-size:1.5rem}header h1 i{color:var(--ok)}header p{color:var(--m);font-size:.85rem;margin-top:4px}
+.screen{display:none;padding:24px}.screen.on{display:block;animation:fd .4s}@keyframes fd{from{opacity:0;transform:translateY(14px)}}
+h2{font-size:1.3rem;margin-bottom:6px}.sub{color:var(--m);font-size:.9rem;margin-bottom:16px;line-height:1.6}
+.back-btn{background:none;border:none;color:var(--m);cursor:pointer;font-size:.95rem;margin-bottom:12px;display:block}
+.sum{background:#0b0f19;border:1px solid var(--b);border-radius:12px;padding:16px;margin-bottom:16px;line-height:1.9;word-break:break-word}.sum span{color:var(--p);font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.card{background:rgba(255,255,255,.03);border:2px solid var(--b);border-radius:18px;padding:24px 14px;text-align:center;cursor:pointer;color:var(--t);font-size:1rem;transition:.25s}
+.card:hover{transform:translateY(-4px)}.card.bk:hover{border-color:var(--bk)}.card.ng:hover{border-color:var(--ng)}
+.card .ic{font-size:2.3rem}.card.bk .ic{color:var(--bk)}.card.ng .ic{color:var(--ng)}.card .nm{font-weight:700;font-size:1.15rem;margin-top:6px}.card .ds{font-size:.82rem;color:var(--m)}
+.paybox{border:2px dashed var(--b);border-radius:14px;padding:20px;text-align:center;margin-bottom:16px;background:#0b0f19}.paybox.bk{border-color:rgba(226,19,110,.55)}.paybox.ng{border-color:rgba(247,147,30,.55)}
+.num{font-size:1.8rem;font-weight:700;letter-spacing:2px;margin:8px 0}
+.copy{background:rgba(255,255,255,.06);border:1px solid var(--b);color:var(--t);border-radius:8px;padding:7px 16px;cursor:pointer;font-size:.9rem}
+.warn{background:rgba(255,92,92,.08);border:1px solid var(--bad);border-radius:12px;padding:14px 16px;margin-bottom:16px;font-size:.9rem;line-height:1.7}.warn b{color:var(--bad)}
+.timer{margin-bottom:16px}.timer .row{display:flex;justify-content:center;gap:8px;align-items:center;color:var(--m);font-size:.9rem}.timer b{color:var(--p);font-size:1.1rem}
+.bar{height:4px;background:var(--b);border-radius:4px;margin-top:8px;overflow:hidden}.bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--p),var(--v));transition:width 1s linear}
+.steps{margin:0 0 16px 20px;color:var(--m);line-height:1.9;font-size:.92rem}
+label{display:block;margin-bottom:7px;font-weight:600;font-size:.93rem}.fg{margin-bottom:16px}
+.in{width:100%;padding:12px 14px;background:#0b0f19;border:1px solid var(--b);border-radius:10px;color:var(--t);font-size:1rem;outline:none}.in:focus{border-color:var(--p)}
+.err{color:var(--bad);font-size:.82rem;margin-top:5px;display:none}.fg.bad .err{display:block}.fg.bad .in{border-color:var(--bad)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.btn{width:100%;padding:13px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--p),var(--a),var(--v));color:#001018;font-size:1.03rem;font-weight:700;cursor:pointer;margin-top:8px;display:block;text-decoration:none;text-align:center}
+.btn:disabled{opacity:.5;cursor:not-allowed}.btn.tg{background:var(--tg);color:#fff}.btn.ghost{background:transparent;border:1px solid var(--b);color:var(--t)}
+.help{margin-top:16px;display:flex;gap:10px;align-items:center;justify-content:space-between;background:rgba(0,136,204,.1);border:1px solid var(--tg);border-radius:12px;padding:14px;font-size:.86rem;flex-wrap:wrap}
+.help a{background:var(--tg);color:#fff;border-radius:8px;padding:9px 16px;font-weight:600;text-decoration:none}
+.center{text-align:center}.ok{font-size:4rem;color:var(--ok)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(90px);background:#111827;border:1px solid var(--p);padding:10px 20px;border-radius:30px;transition:.35s;z-index:90;font-size:.9rem;max-width:92vw;text-align:center}.toast.show{transform:translateX(-50%)}
+#ld{position:fixed;inset:0;z-index:80;background:var(--bg);display:flex;align-items:center;justify-content:center}
+.spin{width:56px;height:56px;border-radius:50%;border:4px solid var(--b);border-top-color:var(--p);animation:sp .9s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="ld"><div class="spin"></div></div>
+<div class="app">
+  <header><h1><i class="fa-solid fa-shield-halved"></i> সিকিউর পেমেন্ট</h1><p id="hsub">Web Maker • পেমেন্ট ভেরিফিকেশন পেজ</p></header>
+
+  <section class="screen on" id="method">
+    <button type="button" class="back-btn" id="backHome"><i class="fa-solid fa-arrow-left"></i> ফিরে যান</button>
+    <h2 id="mTitle">পেমেন্ট মেথড বেছে নিন</h2>
+    <div class="sum" id="orderSum"></div>
+    <div class="grid">
+      <button type="button" class="card bk" data-pay="bkash"><div class="ic"><i class="fa-solid fa-wallet"></i></div><div class="nm">bKash</div><div class="ds">Send Money</div></button>
+      <button type="button" class="card ng" data-pay="nagad"><div class="ic"><i class="fa-solid fa-wallet"></i></div><div class="nm">Nagad</div><div class="ds">Send Money</div></button>
+    </div>
+  </section>
+
+  <section class="screen" id="pay">
+    <button type="button" class="back-btn" id="backMethod"><i class="fa-solid fa-arrow-left"></i> মেথড বদলান</button>
+    <h2 id="payTitle"></h2>
+    <div class="timer"><div class="row"><i class="fa-regular fa-clock"></i> সেশন শেষ হতে বাকি: <b id="tleft">১৫:০০</b></div><div class="bar"><i id="tbar"></i></div></div>
+    <div class="warn"><b><i class="fa-solid fa-triangle-exclamation"></i> গুরুত্বপূর্ণ:</b> অবশ্যই <b>Send Money</b> করতে হবে। Cash Out, Payment বা Recharge গ্রহণ হবে না। ঠিক নির্ধারিত পরিমাণ টাকাই পাঠান। <b>ভুয়া নম্বর বা ভুয়া TrxID দিলে অর্ডার বাতিল হবে।</b> অ্যাডমিন নিজে অ্যাপে মিলিয়ে দেখার পরই কনফার্ম হয়।</div>
+    <div class="paybox" id="paybox">
+      <div class="sub" style="margin:0" id="payHint"></div>
+      <div class="num" id="payNum"></div>
+      <button type="button" class="copy" id="copyBtn"><i class="fa-regular fa-copy"></i> নম্বর কপি করুন</button>
+      <p style="margin-top:12px;color:var(--m);font-size:.9rem">পাঠাতে হবে: <b id="payAmt" style="color:var(--p);font-size:1.15rem"></b></p>
+    </div>
+    <ol class="steps"><li>অ্যাপ থেকে <b>Send Money</b> বেছে নিন</li><li>উপরের নম্বর ও সঠিক টাকা দিন</li><li>পেমেন্ট শেষে পাওয়া Transaction ID নিচে দিন</li></ol>
+    <form id="payForm" novalidate autocomplete="off">
+      <input class="hp" id="website2" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="fg"><label><i class="fa-solid fa-mobile-screen"></i> যে নম্বর থেকে টাকা পাঠিয়েছেন</label><input class="in" id="sender" inputmode="numeric" placeholder="01XXXXXXXXX" maxlength="11"><div class="err">সঠিক ১১ ডিজিটের নম্বর দিন</div></div>
+      <div class="fg"><label><i class="fa-solid fa-money-bill-wave"></i> কত টাকা পাঠিয়েছেন</label><input class="in" id="amt" inputmode="numeric" placeholder="ইংরেজি সংখ্যায়" maxlength="5"><div class="err">সঠিক টাকার পরিমাণ লিখুন</div></div>
+      <div class="fg"><label><i class="fa-solid fa-receipt"></i> Transaction ID (TrxID)</label><input class="in" id="trx" placeholder="যেমন: 9J87X1K8LM" maxlength="14" style="text-transform:uppercase"><div class="err">সঠিক TrxID দিন</div></div>
+      <button class="btn" id="payBtn" type="submit"><i class="fa-solid fa-lock"></i> নিরাপদে জমা দিন</button>
+    </form>
+    <div class="help"><div><b><i class="fa-brands fa-telegram"></i> সমস্যা হচ্ছে?</b><br>পেমেন্ট ভেরিফাই বট: @PaymentVerifyBdWebMakerBot</div><a id="helpLink" target="_blank" rel="noopener noreferrer">ভেরিফাই বট</a></div>
+  </section>
+
+  <section class="screen center" id="done">
+    <div class="ok"><i class="fa-solid fa-circle-check"></i></div>
+    <h2 style="color:var(--p)" id="dTitle"></h2>
+    <p class="sub" id="dSub"></p>
+    <div class="sum" id="doneSum" style="text-align:left"></div>
+    <a class="btn tg" id="botDev" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-telegram"></i> ডেভেলপারকে জানান</a>
+    <a class="btn ghost" id="botPay" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-shield-halved"></i> পেমেন্ট ভেরিফাই বট</a>
+    <a class="btn" href="index.html#orders"><i class="fa-solid fa-box-open"></i> আমার অর্ডার দেখুন</a>
+  </section>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+try { if (window.top !== window.self) window.top.location = window.self.location; } catch (e) { document.body.innerHTML = ''; return; }
+const CFG = { number:'01863062759', dev:'devlopersowad', payBot:'PaymentVerifyBdWebMakerBot', db:'https://bd-web-maker-default-rtdb.firebaseio.com', key:'AIzaSyDmSG4EPJoRHiCJSI58W63PFlHQeZX_XAI', sessionMin:15 };
+const PKGS = { basic:{name:'নরমাল (Basic)',price:300}, standard:{name:'মাঝারি (Standard)',price:800}, bot:{name:'টেলিগ্রাম বট',price:600}, pro:{name:'ফুল ব্যাকএন্ড (Pro)',price:1850}, apk:{name:'ওয়েব টু APK',price:30}, multi:{name:'মাল্টি বিজনেস',price:3000}, ultra:{name:'আল্টিমেট (Hi-Tech)',price:5000} };
+const dn = p => Math.ceil(p * .1);
+const METHODS = { bkash:{label:'bKash', cls:'bk', col:'var(--bk)'}, nagad:{label:'Nagad', cls:'ng', col:'var(--ng)'} };
+const $ = id => document.getElementById(id);
+const bn = n => String(n).replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[d]);
+const taka = n => '৳ ' + bn(n);
+const clean = s => s.replace(/[\u0000-\u0008\u000B-\u001F\u007F<>]/g, '').trim();
+const ss = { get(k){ try { return JSON.parse(sessionStorage.getItem(k)); } catch(e){ return null; } }, set(k,v){ try { sessionStorage.setItem(k, JSON.stringify(v)); } catch(e){} }, del(k){ try { sessionStorage.removeItem(k); } catch(e){} } };
+
+let U, cart, pkg, o, method = null, orderId = '', trxDone = '', deadline = 0, timer = null, busy = false, fails = 0, lockUntil = 0, finalMode = false, payAmt = 0;
+const PAYBTN = '<i class="fa-solid fa-lock"></i> নিরাপদে জমা দিন';
+function toast(t){ const e = $('toast'); e.textContent = t; e.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('show'), 2800); }
+function check(id, ok, msg){ const g = $(id).closest('.fg'); g.classList.toggle('bad', !ok); if(!ok && msg) g.querySelector('.err').textContent = msg; return ok; }
+const bounce = () => location.replace('index.html');
+const tgUrl = (bot, msg) => `https://t.me/${encodeURIComponent(bot)}?text=${encodeURIComponent(msg)}`;
+
+function fillSum(box, rows){ box.replaceChildren(); rows.forEach(([k, v]) => { const d = document.createElement('div'), s = document.createElement('span'); s.textContent = v; d.append(k + ': ', s); box.append(d); }); }
+function go(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id));
+  if(id !== 'pay') stopTimer();
+  const kind = finalMode ? 'বাকি পেমেন্ট' : 'ডাউন পেমেন্ট (১০%)';
+  const base = [['অর্ডার আইডি', orderId || 'পেমেন্টের পর তৈরি হবে'], ['নাম', cart.name], ['প্যাকেজ', `${pkg.name} (মোট ${taka(pkg.price)})`], ['ইমেইল', U.email || '—'], ['এখন দিতে হবে', `${kind}: ${taka(payAmt)}`]];
+  if(id === 'method'){ $('mTitle').textContent = kind + ' — মেথড বেছে নিন'; fillSum($('orderSum'), base); }
+  if(id === 'pay'){ renderPay(); if(!deadline || Date.now() > deadline) deadline = Date.now() + CFG.sessionMin * 60000; startTimer(); }
+  if(id === 'done'){
+    fillSum($('doneSum'), base.concat(method ? [['পেমেন্ট', METHODS[method].label + ' Send Money']] : [], [['TrxID', trxDone]]));
+    $('dTitle').textContent = finalMode ? 'বাকি পেমেন্ট জমা হয়েছে!' : 'ডাউন পেমেন্ট জমা হয়েছে!';
+    $('dSub').textContent = finalMode ? 'অ্যাডমিন যাচাই করে অ্যাপ্রুভ করলে "আমার অর্ডার" পেজে আপনার লিংক দেখতে পাবেন।' : 'অ্যাডমিন যাচাই করে অ্যাপ্রুভ করলে কাজ শুরু হবে। কাজ শেষ হলে "আমার অর্ডার" পেজে জানতে পারবেন।';
+    $('botDev').href = tgUrl(CFG.dev, `আমার ${finalMode ? 'বাকি' : 'ডাউন'} পেমেন্ট জমা দিয়েছি।\nআইডি: ${orderId}\nনাম: ${cart.name}\nপ্যাকেজ: ${pkg.name}\nTrxID: ${trxDone}`);
+    $('botPay').href = tgUrl(CFG.payBot, `পেমেন্ট ভেরিফিকেশন\nআইডি: ${orderId}\nTrxID: ${trxDone}\nটাকা: ${payAmt}`);
+  }
+  window.scrollTo(0, 0);
+}
+function renderPay(){
+  const m = METHODS[method];
+  $('payTitle').textContent = m.label + ' দিয়ে ' + (finalMode ? 'বাকি পেমেন্ট' : 'ডাউন পেমেন্ট');
+  $('payHint').textContent = m.label + ' (Send Money) নম্বর:';
+  $('payNum').textContent = CFG.number; $('payNum').style.color = m.col;
+  $('paybox').className = 'paybox ' + m.cls; $('payAmt').textContent = taka(payAmt);
+  $('helpLink').href = tgUrl(CFG.payBot, `পেমেন্ট যাচাই নিয়ে সাহায্য দরকার।\nনাম: ${cart.name}\nপ্যাকেজ: ${pkg.name}\nমেথড: ${m.label}\nটাকা: ${payAmt}`);
+}
+function startTimer(){
+  stopTimer(); const total = CFG.sessionMin * 60000;
+  const tick = () => {
+    const left = Math.max(0, deadline - Date.now()), m = Math.floor(left / 60000), s = Math.floor(left % 60000 / 1000);
+    $('tleft').textContent = bn(String(m).padStart(2,'0')) + ':' + bn(String(s).padStart(2,'0')); $('tbar').style.width = (left / total * 100) + '%';
+    if(left <= 0){ stopTimer(); method = null; deadline = 0; toast('সেশনের সময় শেষ। আবার মেথড বেছে নিন।'); go('method'); }
+  };
+  tick(); timer = setInterval(tick, 1000);
+}
+function stopTimer(){ if(timer){ clearInterval(timer); timer = null; } }
+
+async function tok(){
+  if(U.tok && Date.now() < U.exp - 60000) return;
+  const r = await fetch('https://securetoken.googleapis.com/v1/token?key=' + CFG.key, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:'grant_type=refresh_token&refresh_token=' + encodeURIComponent(U.rtok) });
+  const d = await r.json(); if(!r.ok) throw new Error('SESSION_EXPIRED');
+  U.tok = d.id_token; U.rtok = d.refresh_token; U.exp = Date.now() + (+d.expires_in) * 1000;
+  ss.set('wm_auth', { uid:U.uid, email:U.email, name:U.name, rtok:U.rtok });
+}
+async function patch(body){
+  const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 12000);
+  try { await tok(); const r = await fetch(CFG.db + '/.json?auth=' + encodeURIComponent(U.tok), { method:'PATCH', body: JSON.stringify(body), signal: ctl.signal }); return { ok:r.ok, code:r.status }; }
+  catch(e) { return { ok:false, code: e.message === 'SESSION_EXPIRED' ? -1 : 0 }; }
+  finally { clearTimeout(to); }
+}
+function lockTick(){
+  const r = Math.ceil((lockUntil - Date.now()) / 1000), b = $('payBtn');
+  if(r > 0){ b.disabled = true; b.textContent = `অনেকবার ভুল চেষ্টা। ${bn(r)} সেকেন্ড অপেক্ষা করুন`; setTimeout(lockTick, 500); } else { b.disabled = false; b.innerHTML = PAYBTN; }
+}
+function failOnce(){ if(++fails >= 5){ fails = 0; lockUntil = Date.now() + 30000; lockTick(); } }
+
+$('payForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  if(busy || Date.now() < lockUntil || $('website2').value) return;
+  if(Date.now() > deadline){ go('method'); return; }
+  const sender = clean($('sender').value), amt = +clean($('amt').value), trx = clean($('trx').value).toUpperCase();
+  const trxRe = method === 'bkash' ? /^[A-Z0-9]{10}$/ : /^[A-Z0-9]{8,12}$/;
+  const v1 = check('sender', /^01[3-9]\d{8}$/.test(sender) && sender !== CFG.number, 'সঠিক ১১ ডিজিটের নম্বর দিন (আমাদের নম্বর নয়)');
+  const v2 = check('amt', amt === payAmt, `ঠিক ${bn(payAmt)} টাকা লিখুন`);
+  const v3 = check('trx', trxRe.test(trx) && new Set(trx).size >= 4, method === 'bkash' ? 'bKash TrxID ঠিক ১০ অক্ষরের হতে হবে' : 'সঠিক TrxID দিন (৮–১২ অক্ষর)');
+  if(!(v1 && v2 && v3)){ failOnce(); return; }
+
+  busy = true; const btn = $('payBtn'); btn.disabled = true; btn.textContent = 'সিকিউরলি পাঠানো হচ্ছে...';
+  const id = finalMode ? orderId : 'WM-' + Date.now().toString(36).toUpperCase().slice(-6) + Math.random().toString(36).slice(2,5).toUpperCase();
+  const body = {}; body['trx/' + trx] = id;
+  if(finalMode) body['finalpay/' + id] = { uid:U.uid, amount:amt, method, sender, trx, createdAt:{'.sv':'timestamp'} };
+  else {
+    body['orders/' + id] = { uid:U.uid, email:U.email, name:cart.name, contact:cart.contact, desc:cart.desc, package:cart.pkg, price:pkg.price, down:payAmt, amount:amt, method, sender, trx, status:'pending', createdAt:{'.sv':'timestamp'} };
+    body['userOrders/' + U.uid + '/' + id] = true;
+  }
+  const res = await patch(body);
+  busy = false; btn.disabled = false; btn.innerHTML = PAYBTN;
+  if(!res.ok){
+    if(res.code === -1){ toast('লগইন সেশন শেষ। আবার লগইন করুন।'); setTimeout(bounce, 1200); }
+    else if(res.code === 0) toast('ইন্টারনেট সমস্যা। আবার চেষ্টা করুন।');
+    else if(res.code === 401 || res.code === 403){ check('trx', false, 'এই TrxID আগেই ব্যবহার করা হয়েছে অথবা সংরক্ষণ করা যায়নি'); failOnce(); }
+    else toast('সার্ভার সমস্যা (' + res.code + ')। আবার চেষ্টা করুন।');
+    return;
+  }
+  orderId = id; trxDone = trx;
+  ss.set('wm_last', { orderId, trx, method, final:finalMode }); ss.del('wm_cart'); ss.del('wm_final');
+  go('done');
+});
+
+document.querySelectorAll('[data-pay]').forEach(b => b.addEventListener('click', () => { method = b.dataset.pay; deadline = 0; go('pay'); }));
+$('backHome').addEventListener('click', () => { location.href = 'index.html'; });
+$('backMethod').addEventListener('click', () => go('method'));
+$('copyBtn').addEventListener('click', async () => { try { await navigator.clipboard.writeText(CFG.number); toast('নম্বর কপি হয়েছে ✓'); } catch(e) { toast('কপি করা যায়নি, হাতে লিখে নিন'); } });
+['sender','amt'].forEach(i => $(i).addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, ''); }));
+
+async function getOrder(id){
+  const r = await fetch(`${CFG.db}/orders/${encodeURIComponent(id)}.json?auth=${encodeURIComponent(U.tok)}`);
+  return r.ok ? r.json() : null;
+}
+(async function init(){
+  const a = ss.get('wm_auth'); cart = ss.get('wm_cart'); const fin = ss.get('wm_final'), last = ss.get('wm_last');
+  if(!a || !a.rtok) return bounce();
+  U = { uid:a.uid, email:a.email, name:a.name, tok:'', rtok:a.rtok, exp:0 };
+  try { await tok(); } catch(e){ ss.del('wm_auth'); return bounce(); }
+  try {
+    if(fin && fin.id){
+      o = await getOrder(fin.id); if(!o || o.uid !== U.uid) return bounce();
+      finalMode = true; orderId = fin.id; cart = o; cart.pkg = o.package; pkg = PKGS[o.package] || { name:o.package, price:o.price };
+      payAmt = o.price - (o.down || dn(o.price));
+      if(payAmt <= 0) return bounce();
+      $('ld').classList.add('hide'); return go('method');
+    }
+    if(cart){
+      if(!PKGS[cart.pkg] || Date.now() - cart.t > 3600000){ ss.del('wm_cart'); return bounce(); }
+      pkg = PKGS[cart.pkg]; payAmt = dn(pkg.price); $('ld').classList.add('hide'); return go('method');
+    }
+    if(last){
+      o = await getOrder(last.orderId); if(!o) return bounce();
+      orderId = last.orderId; trxDone = last.trx; method = last.method; finalMode = !!last.final; cart = o; cart.pkg = o.package;
+      pkg = PKGS[o.package] || { name:o.package, price:o.price };
+      payAmt = finalMode ? o.price - (o.down || dn(o.price)) : (o.down || dn(o.price));
+      $('ld').classList.add('hide'); return go('done');
+    }
+  } catch(e){ return bounce(); }
+  bounce();
+})();
+})();
+</script>
+</body>
+</html>
